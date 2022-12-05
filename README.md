@@ -1,2 +1,13 @@
 # Advent-of-Code-2022
- 
+
+A collection of solutions developed solving the Advent of Code 2022 puzzles.
+
+--------
+
+## Table of Contents
+
+- Day 1: Calorie Counting
+- Day 2: ...
+- Day 3: ...
+- Day 4: ...
+- Day 5: ...
