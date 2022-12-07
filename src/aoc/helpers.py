@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 
-def get_data(file_name: str, data_dir: str = "data") -> list[str]:
+def get_input_data(file_name: str, data_dir: str = "data") -> list[str]:
     """Returns the contents of the provided data file as a list
     of strings.
 
@@ -26,6 +26,6 @@ def get_data(file_name: str, data_dir: str = "data") -> list[str]:
     project_dir = Path(__file__).parent.parent.parent
     data_dir = os.path.join(project_dir, data_dir)
     filepath = os.path.join(data_dir, file_name)
-    with open(filepath, "r") as input_file:
+    with open(filepath, "r", encoding="utf-8") as input_file:
         lines_list = input_file.readlines()
     return lines_list

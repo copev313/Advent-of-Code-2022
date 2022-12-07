@@ -1,65 +1,69 @@
 """
     Day 1: Calorie Counting
 """
-from aoc.helpers import get_data
+from aoc.helpers import get_input_data
 
 
-def parse_input():
-    lines = get_data("day1.txt")
+def parse_input(filename: str):
+    """Retrieves, parses, and formats the day 1 input data."""
+    # Load input data as list of strings:
+    lines = get_input_data(filename)
+    # Remove newline characters:
     lines = map(lambda x: x.replace("\n", ""), lines)
-    lines = map(lambda x: int(x) if x != "" else x, lines)
+    # Convert to integers (except empty strings):
+    lines = map(lambda x: int(x) if x != "" else None, lines)
     return list(lines)
 
 
-def part1() -> int:
-    lines = parse_input()
-    # Max sum & current sum of calories found:
-    max_cals, sum_cals = 0, 0
+def part1(data: list[int | str], num_totals: int = 1) -> int:
+    """Returns the solution to part 1 of the day 1 puzzle.
 
-    for line in lines:
-        # [CASE] Collect + compare total of group:
-        if line == "":
-            # Reached the end of the group:
-            if sum_cals > max_cals:
-                max_cals = sum_cals
-                sum_cals = 0
-        else:
-            # Add calories to sum:
-            sum_cals += line
+    Parameters
+    ----------
+    data : list[int | str]
+        The input data to process.
 
-    return max_cals
+    num_totals : int, optional (default: 1)
+        The number of number of max calorie sums to return.
 
-
-def part2() -> int:
-    lines = parse_input()
-    # List of sums of calories:
+    Returns
+    -------
+    int:
+        The max calorie sum(s).
+    """
     sums_list = []
-    # Current sum of calories found:
     sum_cals = 0
-
-    for line in lines:
-        # [CASE] Collect + compare total of group:
-        if line == "":
-            # Reached the end of the group:
+    for line in data:
+        # End of group -> add sum to list:
+        if line is None:
             sums_list.append(sum_cals)
             sum_cals = 0
         else:
-            # Add calories to sum:
             sum_cals += line
+    # Return first few max sums of the sorted list:
+    sums_list.sort(reverse=True)
+    return sums_list[:num_totals]
 
-    top3_cals = []
-    # Fin top 3 totals:
-    for _ in range(3):
-        max_sum = max(sums_list)
-        top3_cals.append(max_sum)
-        # Gather index of max sum:
-        found_max_index = sums_list.index(max_sum)
-        del sums_list[found_max_index]
 
-    return sum(top3_cals)
+def part2(data: list[int | str]) -> int:
+    """Returns the solution to part 2 of the day 1 puzzle. 
+
+    Parameters
+    ----------
+    data : list[int | str]
+        The input data to process.
+
+    Returns
+    -------
+    int:
+        The sum of the top three calorie sums.
+    """
+    top3_max_sums = part1(data, num_totals=3)
+    return sum(top3_max_sums)
 
 # ----------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    print(f" Part 1 Solution: {part1()} ")
-    print(f" Part 2 Solution: {part2()} ")
+    input_data = parse_input("day1.txt")
+    print(f" Part 1 Solution: {part1(input_data)[0]} ")
+    print(f" Part 2 Solution: {part2(input_data)} ")
