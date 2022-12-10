@@ -1,7 +1,7 @@
 """
     Day 1: Calorie Counting
 """
-from aoc.helpers import get_input_data
+from src.helpers.input import get_input_data
 
 
 def parse_input(filename: str):
@@ -11,8 +11,10 @@ def parse_input(filename: str):
     # Remove newline characters:
     lines = map(lambda x: x.replace("\n", ""), lines)
     # Convert to integers (except empty strings):
-    lines = map(lambda x: int(x) if x != "" else None, lines)
-    return list(lines)
+    lines = list(map(lambda x: int(x) if x != "" else None, lines))
+    # Ensure last line is None:
+    lines = lines if lines[-1] is None else [*lines, None]
+    return lines
 
 
 def part1(data: list[int | str], num_totals: int = 1) -> int:
