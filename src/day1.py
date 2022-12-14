@@ -1,11 +1,11 @@
 """
     Day 1: Calorie Counting
 """
-from src.helpers.input import get_input_data
+from helpers.input import get_input_data
 
 
-def parse_input(filename: str):
-    """Retrieves, parses, and formats the day 1 input data."""
+def parse_input(filename: str) -> list[int | None]:
+    """Retrieves, parses, and formats the day 1 input data. """
     # Load input data as list of strings:
     lines = get_input_data(filename)
     # Remove newline characters:
@@ -26,7 +26,7 @@ def part1(data: list[int | str], num_totals: int = 1) -> int:
         The input data to process.
 
     num_totals : int, optional (default: 1)
-        The number of number of max calorie sums to return.
+        The number of max calorie sums to return.
 
     Returns
     -------
@@ -67,5 +67,9 @@ def part2(data: list[int | str]) -> int:
 
 if __name__ == "__main__":
     input_data = parse_input("day1.txt")
+
     print(f" Part 1 Solution: {part1(input_data)[0]} ")
+    assert part1(input_data)[0] == 74198
+
     print(f" Part 2 Solution: {part2(input_data)} ")
+    assert part2(input_data) == 209914
