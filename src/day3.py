@@ -4,7 +4,7 @@
 from helpers.input import get_input_data
 
 
-def parse_input(filename: str) -> list[int | None]:
+def parse_input(filename: str) -> list[str]:
     """Retrieves, parses, and formats the input data. """
     # Load input data as list of strings:
     lines = get_input_data(filename)
