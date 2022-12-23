@@ -5,7 +5,7 @@ from helpers.input import get_input_data
 
 
 def parse_input(filename: str):
-    """Retrieves, parses, and formats the input data."""
+    """Retrieves, parses, and formats the input data. """
     # Load input data as list of strings:
     lines = get_input_data(filename)
     # Remove newline characters:
@@ -100,14 +100,14 @@ def determine_my_choice(outcome: str, opp_choice: str) -> str:
     # Mapping of shapes to points:
     shape_score = ScoreCard.SHAPES
     # Opponent's shape score:
-    oscore = shape_score[opp_choice]
+    opp_score = shape_score[opp_choice]
     match outcome:
         case "Draw":
-            return oscore
+            return opp_score
         case "Win":
-            return (oscore % 3) + 1
+            return (opp_score % 3) + 1
         case "Lose":
-            return ((oscore-1) % 3) if oscore > 1 else 3
+            return ((opp_score-1) % 3) if opp_score > 1 else 3
 
 
 
@@ -136,8 +136,11 @@ def part1(data: list[tuple]) -> int:
         # Determine the outcome of the game:
         outcome = determine_outcome(my_map[my_choice], opp_map[opp_choice])
         # Determine the points scored from the outcome and shape I chose:
-        scored_pts = outcomes_scores[outcome] + shapes_scores[my_map[my_choice]]
+        scored_pts = (
+            outcomes_scores[outcome] + shapes_scores[my_map[my_choice]]
+        )
         my_total_score += scored_pts
+
     return my_total_score
 
 
@@ -167,15 +170,18 @@ def part2(data: list[tuple]) -> int:
         # Map outcome code to outcome:
         outcome = outcome_map[outcome]
         # Determine the points scored from the outcome and shape I chose:
-        scored_pts = outcome_scores[outcome] + determine_my_choice(outcome, opp_choice)
+        scored_pts = (
+            outcome_scores[outcome] + determine_my_choice(outcome, opp_choice)
+        )
         my_total_score += scored_pts
+
     return my_total_score
 
 # ----------------------------------------------------------------------------
 
 if __name__ == "__main__":
+
     input_data = parse_input("day2.txt")
-    # print(f" Input Data: {input_data} ")
 
     print(f" Part 1 Solution: {part1(input_data)} ")
     assert part1(input_data) == 15632

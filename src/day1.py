@@ -5,7 +5,7 @@ from helpers.input import get_input_data
 
 
 def parse_input(filename: str) -> list[int | None]:
-    """Retrieves, parses, and formats the day 1 input data. """
+    """Retrieves, parses, and formats the input data. """
     # Load input data as list of strings:
     lines = get_input_data(filename)
     # Remove newline characters:
@@ -66,6 +66,7 @@ def part2(data: list[int | str]) -> int:
 # ----------------------------------------------------------------------------
 
 if __name__ == "__main__":
+
     input_data = parse_input("day1.txt")
 
     print(f" Part 1 Solution: {part1(input_data)[0]} ")
