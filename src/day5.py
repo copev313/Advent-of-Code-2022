@@ -14,13 +14,28 @@ def parse_input(filename: str) -> list[tuple]:
     return list(lines)
 
 
+INITIAL_STACK_STATE = [
+    ["D", "T", "W", "F", "J", "S", "H", "N"],
+    ["H", "R", "P", "Q", "T", "N", "B", "G"],
+    ["L", "Q", "V"],
+    ["N", "B", "S", "W", "R", "Q"],
+    ["N", "D", "F", "T", "V", "M", "B"],
+    ["M", "D", "B", "V", "H", "T", "R"],
+    ["D", "B", "Q", "J"],
+    ["D", "N", "J", "V", "R", "Z", "H", "Q"],
+    ["B", "N", "H", "M", "S"],
+]
+
 
 class Stack:
-    """A traditional stack data structure. (LIFO) """
-    
+    """A traditional Last-In-First-Out stack data structure. """
+
     def __init__(self, name: str | int):
         self.name = name
         self.stack = []
+
+    def __repr__(self) -> str:
+        return f"{self.name}: {self.stack}"
 
     @property
     def size(self) -> int:
@@ -43,22 +58,81 @@ class Stack:
             return self.stack.pop()
 
 
+    def clear(self):
+        """Removes all items from the stack. """
+        self.stack = []
+
+
+    def move(self, qty: int, to_stk):
+        """Moves the specified number of items incrementally from the top of
+        the stack to the specified stack. 
+        
+        Parameters
+        ----------
+        qty : int
+            The number of times to move an item.
+        
+        to_stk : Stack
+            The stack to move the items to.
+        """
+        for _ in range(qty):
+            element = self.pop()
+            to_stk.push(element)
+
+
+    def move_group(self, qty: int, to_stk):
+        """Moves the specified number of items from the top of the stack to
+        the specified stack, in the same grouped order. 
+        
+        Parameters
+        ----------
+        qty : int
+            The number of items to move.
+        
+        to_stk : Stack
+            The stack to move the items to.
+        """
+        # Gather the group of items to move:
+        grouped_elements = self.stack[-qty:]
+        # Remove the items from the stack:
+        for _ in range(qty):
+            self.pop()
+        # Add the items to the specified stack:
+        to_stk.stack.extend(grouped_elements)
+
+
     def peek(self) -> str | int:
         """Returns the top item from the stack without removing it. """
-        if self.is_empty:
-            return ""
-        return self.stack[-1]
+        if not self.is_empty:
+            return self.stack[-1]
 
 
-def get_stack_by_name(name: str, stacks: list[Stack]) -> Stack:
-    """Returns the stack with the specified name. """
-    for stack in stacks:
-        if stack.name == name:
-            return stack
-    raise ValueError(f"Stack with name {name} not found. ")
+
+def setup_stacks(initial_state: list[list]) -> list[Stack]:
+    """Returns a list of stacks with the specified initial state. 
+    
+    Parameters
+    ----------
+    initial_state : list[list]
+        A list of lists containing the initial state of each stack.
+    
+    Returns
+    -------
+    list[Stack]:
+        A list of stacks with the specified initial state.
+    """
+    # Create a tuple of stacks:
+    stacks = list()
+    for num in range(1, len(initial_state) + 1):
+        stacks += (Stack(str(num)), )
+    # Set the initial state of each stack:
+    for num, stk in enumerate(stacks):
+        stk.stack = initial_state[num].copy()
+    return stacks
 
 
-def part1(data: list[tuple]) -> int:
+
+def part1(data: list[tuple]) -> str:
     """Returns the solution to part 1 of the puzzle.
 
     Parameters
@@ -68,51 +142,26 @@ def part1(data: list[tuple]) -> int:
 
     Returns
     -------
-    int:
-        
+    str:
+        The top element of each stack.
     """
     cutoff_index = data.index("") + 1
     data = data[cutoff_index:]
-    s1 = Stack("1")
-    s2 = Stack("2")
-    s3 = Stack("3")
-    s4 = Stack("4")
-    s5 = Stack("5")
-    s6 = Stack("6")
-    s7 = Stack("7")
-    s8 = Stack("8")
-    s9 = Stack("9")
-    stacks = [s1, s2, s3, s4, s5, s6, s7, s8, s9]
-
-    def setup_stacks():
-        s1.stack = ["D", "T", "W", "F", "J", "S", "H", "N"]
-        s2.stack = ["H", "R", "P", "Q", "T", "N", "B", "G"]
-        s3.stack = ["L", "Q", "V"]
-        s4.stack = ["N", "B", "S", "W", "R", "Q"]
-        s5.stack = ["N", "D", "F", "T", "V", "M", "B"]
-        s6.stack = ["M", "D", "B", "V", "H", "T", "R"]
-        s7.stack = ["D", "B", "Q", "J"]
-        s8.stack = ["D", "N", "J", "V", "R", "Z", "H", "Q"]
-        s9.stack = ["B", "N", "H", "M", "S"]
-
-    setup_stacks()
+    # Setup the stacks:
+    stacks = setup_stacks(INITIAL_STACK_STATE)
 
     for line in data:
         # Split on spaces & unpack into variables:
-        _, qty, _, from_stack, _, to_stack = tuple(line.split(" "))
-
-        from_stack = get_stack_by_name(from_stack, stacks)
-        to_stack = get_stack_by_name(to_stack, stacks)
+        _, qty, _, from_stk, _, to_stk = tuple(line.split(" "))
+        # Get the corresponding stack objects:
+        from_stk, to_stk = stacks[int(from_stk) - 1], stacks[int(to_stk) - 1]
         # Perform the move operation the specified number of times:
-        for _ in range(int(qty)):
-            element = from_stack.pop()
-            to_stack.push(element)
+        from_stk.move(int(qty), to_stk)
 
-    # Print the top element of each stack:
+    # Return the top element of each stack:
     top_elements = ""
-    for stack in [s1, s2, s3, s4, s5, s6, s7, s8, s9]:
+    for stack in stacks:
         top_elements += stack.peek()
-    
     return top_elements
 
 
@@ -127,10 +176,27 @@ def part2(data: list[tuple]) -> int:
 
     Returns
     -------
-    int:
-        
+    str:
+        The top element of each stack.
     """
-    pass
+    cutoff_index = data.index("") + 1
+    data = data[cutoff_index:]
+    # Setup the stacks:
+    stacks = setup_stacks(INITIAL_STACK_STATE)
+
+    for line in data:
+        # Split on spaces & unpack into variables:
+        _, qty, _, from_stk, _, to_stk = tuple(line.split(" "))
+        # Get the corresponding stack objects:
+        from_stk, to_stk = stacks[int(from_stk) - 1], stacks[int(to_stk) - 1]
+        # Use the move group operation to the specified number of elements:
+        from_stk.move_group(int(qty), to_stk)
+
+    # Return the top element of each stack:
+    top_elements = ""
+    for stack in stacks:
+        top_elements += stack.peek()
+    return top_elements
 
 # ----------------------------------------------------------------------------
 
@@ -138,8 +204,10 @@ if __name__ == "__main__":
 
     input_data = parse_input("day5.txt")
 
-    print(f" Part 1 Solution: {part1(input_data)} ")
-    assert part1(input_data) == "GRTSWNJHH"
+    part1_solution = part1(input_data)
+    print(f" Part 1 Solution: {part1_solution} ")
+    assert part1_solution == "GRTSWNJHH"
 
-    # print(f" Part 2 Solution: {part2(input_data)} ")
-    # assert part2(input_data) == 870
+    part2_solution = part2(input_data)
+    print(f" Part 2 Solution: {part2_solution} ")
+    assert part2_solution == "QLFQDBBHM"
