@@ -1,3 +1,12 @@
+
+<div style="text-align:right">
+    <a href="https://github.com/copev313/Advent-of-Code-2022/actions/workflows/solution-tests.yml"
+         title="CI/CD">
+          <img src="https://github.com/copev313/Advent-of-Code-2022/actions/workflows/solution-tests.yml/badge.svg"
+                alt="CI/CD">
+    </a>
+</div>
+
 # Advent-of-Code-2022
 
 A collection of solutions developed solving the Advent of Code 2022.
