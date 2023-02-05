@@ -1,7 +1,7 @@
 """
     Day 1: Calorie Counting
 """
-from helpers.input import get_input_data
+from src.helpers.input import get_input_data
 
 
 def parse_input(filename: str) -> list[int | None]:
